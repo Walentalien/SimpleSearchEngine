@@ -1,6 +1,6 @@
-//const {JSDOM} = require('jsdom');
-import {JSDOM} from 'jsdom';
-export async function crawlPage(baseURL, currentURL, pages){
+const {JSDOM} = require('jsdom');
+//import {JSDOM} from 'jsdom';
+ async function crawlPage(baseURL, currentURL, pages){
 
     const baseURLObject = new URL(baseURL)
     const currentURLObject = new URL(currentURL)
@@ -72,9 +72,9 @@ function normalizeURL(urlString){
 }
 
 
-// makes this function available to other
-// module.exports = {
-//     normalizeURL,
-//     getURLsFromHTML,
-//     crawlPage,
-// }
+//makes this function available to other
+module.exports = {
+    normalizeURL,
+    getURLsFromHTML,
+    crawlPage,
+}

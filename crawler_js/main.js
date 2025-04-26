@@ -11,7 +11,7 @@ async function main() {
     //     console.log(arg)
     // }
     const baseURL = process.argv[2]
-    console.log("starting crawl of $(baseURL)")
+    console.log(`starting crawl of ${baseURL}`)
     const pages = await crawlPage(baseURL, baseURL, {})
     for (const page of Object.entries(pages)) {
         console.log(page)
