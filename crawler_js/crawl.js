@@ -1,6 +1,21 @@
-const {JSDOM} = require('jsdom');
+//const {JSDOM} = require('jsdom');
+import {JSDOM} from 'jsdom';
+export async function crawlPage(baseURL, currentURL, pages){
 
-async function crawlPage(currentURL){
+    const baseURLObject = new URL(baseURL)
+    const currentURLObject = new URL(currentURL)
+// seen external link
+    if (baseURLObject.hostname !== currentURLObject.hostname) {
+        return pages
+    }
+
+    const normalizedCurrentURL = normalizeURL(currentURL)
+   if (pages[normalizedCurrentURL] > 0){
+       pages[normalizedCurrentURL]++
+       return pages
+   }
+
+   pages[normalizedCurrentURL]=1
     console.log(`Actively crawling: ${currentURL}`)
 
     try {
@@ -8,17 +23,23 @@ async function crawlPage(currentURL){
 
         if ( resp.status >399) {
             console.log(`error in fetch with status code: ${resp.status} on page ${currentURL}`);
-            return
+            return pages
         }
         const contentType = resp.headers.get("content-type")
         if (!contentType.includes("text/html")) {
             console.log(`non html response, context type: ${contentType}, on page ${currentURL}`)
-            return
+            return pages
         }
-        console.log(await resp.text())
+        //console.log(await resp.text())
+        const htmlBody = await resp.text()
+        const nextURLs = getURLsFromHTML(htmlBody, baseURL)
+        for (const nextURL of nextURLs) {
+            pages = await crawlPage(baseURL,nextURL, pages);
+        }
     } catch (error) {
         console.log(`ERROR: fetch to fetch: ${currentURL} msg: ${error}`)
     }
+   return pages
 }
 function getURLsFromHTML(htmlBody, baseUrl) {
     const urls = []
@@ -52,8 +73,8 @@ function normalizeURL(urlString){
 
 
 // makes this function available to other
-module.exports = {
-    normalizeURL,
-    getURLsFromHTML,
-    crawlPage
-}
+// module.exports = {
+//     normalizeURL,
+//     getURLsFromHTML,
+//     crawlPage,
+// }
