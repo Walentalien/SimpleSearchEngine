@@ -1,3 +1,24 @@
+const {JSDOM} = require('jsdom');
+function getURLsFromHTML(htmlBody, baseUrl) {
+    const urls = []
+    const dom = new JSDOM(htmlBody)
+    const linkElements = dom.window.document.querySelectorAll('a')
+    //Function for removeing trailing slashes, because dom adds it always
+    const removeTrailingSlash = link => link.endsWith('/') ? link.slice(0, -1) : link;
+
+    for (const linkElement of linkElements) {
+        const href = linkElement.getAttribute('href')
+
+        try {
+            const url = new URL(href, baseUrl); // handles relative + absolute links
+            urls.push(removeTrailingSlash(url.href));
+        } catch (err) {
+            // skip invalid URLs
+            console.warn(`Invalid URL skipped: ${href}`);
+        }
+    }
+    return urls
+}
 function normalizeURL(urlString){
     const urlObject = new URL(urlString);
     const hostPath =  `${urlObject.hostname}${urlObject.pathname}`;
@@ -7,5 +28,11 @@ function normalizeURL(urlString){
     }
     return hostPath;
 }
+
+
 // makes this function available to other
-module.exports = normalizeURL;
+module.exports = {
+    normalizeURL,
+    getURLsFromHTML,
+
+}
