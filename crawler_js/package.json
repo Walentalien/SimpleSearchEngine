@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "JS version of crawler for my project",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "node --no-warnings main.js",
     "test": "jest"

@@ -1,7 +1,7 @@
 
 //const {crawlPage} = require('./crawl.js');
 import { crawlPage } from './crawl.js';
-import {printReport} from './report.js'
+import {printReport} from './report.js';
 async function main() {
     if (process.argv.length < 3) {
         console.log("No website provided")
